@@ -91,15 +91,19 @@ jobs:
 
       - name: Smoke test
         run: |
-          RESULT=$(aws lambda invoke \
+          aws lambda invoke \
             --function-name $FUNCTION_NAME \
             --payload '{"httpMethod":"GET","path":"/players/smoke-test","pathParameters":{"playerId":"smoke-test"}}' \
             --cli-binary-format raw-in-base64-out \
-            /tmp/response.json && cat /tmp/response.json)
-          echo "Smoke test result: $RESULT"
-          # Verify it's valid JSON
-          echo $RESULT | python3 -m json.tool > /dev/null
-          echo "Smoke test PASSED"
+            /tmp/response.json
+          BODY=$(cat /tmp/response.json)
+          echo "Lambda response: $BODY"
+          STATUS=$(echo $BODY | py -c "import sys,json; d=json.load(sys.stdin); print(d.get('statusCode',0))")
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "404" ]; then
+            echo "Smoke test PASSED - statusCode $STATUS"
+          else
+            echo "Smoke test FAILED - statusCode $STATUS"; exit 1
+          fi
 
   report:
     name: "4 — Evaluation Report"
