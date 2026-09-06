@@ -98,7 +98,7 @@ jobs:
             /tmp/response.json
           BODY=$(cat /tmp/response.json)
           echo "Lambda response: $BODY"
-          STATUS=$(echo $BODY | py -c "import sys,json; d=json.load(sys.stdin); print(d.get('statusCode',0))")
+          STATUS=$(echo $BODY | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('statusCode',0))")
           if [ "$STATUS" = "200" ] || [ "$STATUS" = "404" ]; then
             echo "Smoke test PASSED - statusCode $STATUS"
           else
