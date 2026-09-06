@@ -57,7 +57,7 @@ jobs:
         run: pip install pytest boto3 "moto[dynamodb]"
 
       - name: Run tests
-        run: pytest tests/ -v --tb=short
+        run: pytest 03-cicd-pipeline/tests/ -v --tb=short
 
   deploy:
     name: "3 — Deploy to AWS"
@@ -75,7 +75,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Package Lambda
-        run: zip function.zip lambda_function.py
+        run: zip function.zip 03-cicd-pipeline/lambda_function.py
 
       - name: Deploy Lambda
         run: |
