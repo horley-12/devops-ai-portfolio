@@ -11,6 +11,7 @@ spec:
   - name: node.alerts
     interval: 30s
     rules:
+
     - alert: HighCPUUsage
       expr: |
         100 - (avg by (instance)
@@ -20,7 +21,7 @@ spec:
         severity: warning
       annotations:
         summary: "High CPU usage on {{ $labels.instance }}"
-        description: "CPU usage is {{ $value | printf \"%.2f\" }}% above 70% threshold"
+        description: "CPU usage is {{ $value | printf \"%.2f\" }}% — above 70% threshold for 5 minutes"
 
     - alert: HighMemoryUsage
       expr: |
@@ -31,7 +32,7 @@ spec:
         severity: critical
       annotations:
         summary: "High memory usage on {{ $labels.instance }}"
-        description: "Memory usage is {{ $value | printf \"%.2f\" }}% above 80% threshold"
+        description: "Memory usage is {{ $value | printf \"%.2f\" }}% — above 80% threshold"
 
     - alert: PodCrashLooping
       expr: |
@@ -41,4 +42,4 @@ spec:
         severity: critical
       annotations:
         summary: "Pod {{ $labels.pod }} is crash looping"
-        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} restarted more than 3 times in 15 minutes"
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has restarted more than 3 times in 15 minutes"
