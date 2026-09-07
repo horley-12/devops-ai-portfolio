@@ -15,7 +15,7 @@ AWS, Azure, and local Kubernetes environments.
 | 1 | [K8s Cluster Failure Diagnosis](./01-k8s-failure-diagnosis/) | kind · kubectl · Docker | ✅ Complete | Cluster diagnosis & repair |
 | 2 | [Serverless REST API](./02-serverless-api/) | Lambda · DynamoDB · Terraform · Python | ✅ Complete | AWS integration & IaC |
 | 3 | [CI/CD Pipeline with Evaluation](./03-cicd-pipeline/) | GitHub Actions · Checkov · pytest · Lambda | ✅ Complete | Pipeline engineering |
-| 4 | Observability Stack | Prometheus · Grafana · Helm · Kubernetes | 🔄 In Progress | Monitoring & alerting |
+| 4 | [Observability Stack](./04-observability-stack/) | Prometheus · Grafana · Helm · Kubernetes | 🔄 In Progress | Monitoring & alerting |
 | 5 | GitOps with ArgoCD | ArgoCD · Kubernetes · Git | 🔄 Coming Soon | GitOps & rollback |
 | 6 | DevSecOps Pipeline | Trivy · pip-audit · GitHub Actions · SARIF | 🔄 Coming Soon | Security scanning |
 
