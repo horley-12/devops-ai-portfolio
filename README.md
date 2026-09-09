@@ -17,7 +17,7 @@ AWS, Azure, and local Kubernetes environments.
 | 3 | [CI/CD Pipeline with Evaluation](./03-cicd-pipeline/) | GitHub Actions · Checkov · pytest · Lambda | ✅ Complete | Pipeline engineering |
 | 4 | [Observability Stack](./04-observability-stack/) | Prometheus · Grafana · Helm · Kubernetes | ✅ Complete | Monitoring & alerting |
 | 5 | [GitOps with ArgoCD](./05-gitops-argocd/) | ArgoCD · Kubernetes · Git | ✅ Complete | GitOps & rollback |
-| 6 | DevSecOps Pipeline | Trivy · pip-audit · GitHub Actions · SARIF | 🔄 Coming Soon | Security scanning |
+| 6 | [DevSecOps Pipeline](./06-devsecops-pipeline/) | Trivy · pip-audit · GitHub Actions · SARIF | ✅ Complete | Security scanning |
 
 ---
 
