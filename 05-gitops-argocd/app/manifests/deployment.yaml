@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: gitops-app
-        image: nginx:1.25.0
+        image: nginx:1.26.0
         ports:
         - containerPort: 80
         resources:
