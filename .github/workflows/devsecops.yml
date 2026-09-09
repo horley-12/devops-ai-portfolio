@@ -43,9 +43,13 @@ jobs:
           path: pip-audit-results.json
           retention-days: 30
 
-  image-scan:
+   image-scan:
     name: "2 — Container Image Vulnerability Scan"
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
