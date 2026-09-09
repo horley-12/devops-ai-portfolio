@@ -8,6 +8,7 @@ on:
       - '.github/workflows/devsecops.yml'
   pull_request:
     branches: [main]
+
 permissions:
   contents: read
   security-events: write
@@ -35,7 +36,6 @@ jobs:
           pip-audit -r 06-devsecops-pipeline/requirements.txt \
             --format json \
             --output pip-audit-results.json || true
-          
           echo "=== Scan Summary ==="
           pip-audit -r 06-devsecops-pipeline/requirements.txt || true
 
@@ -47,27 +47,18 @@ jobs:
           path: pip-audit-results.json
           retention-days: 30
 
-   image-scan:
+  image-scan:
     name: "2 — Container Image Vulnerability Scan"
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       security-events: write
       actions: read
-      contents: read
     steps:
       - uses: actions/checkout@v4
 
       - name: Build Docker image for scanning
         run: |
-          cat > 06-devsecops-pipeline/Dockerfile << 'DOCKERFILE'
-          FROM python:3.12-slim
-          WORKDIR /app
-          COPY requirements.txt .
-          RUN pip install -r requirements.txt
-          COPY lambda_function.py .
-          CMD ["python", "lambda_function.py"]
-          DOCKERFILE
-          
           docker build \
             -t devops-portfolio-lambda:scan \
             -f 06-devsecops-pipeline/Dockerfile \
@@ -87,7 +78,7 @@ jobs:
           echo "=== Trivy Container Scan Results ==="
           cat trivy-results.txt
 
-      - name: Run Trivy SARIF scan for GitHub Security tab
+      - name: Run Trivy SARIF scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: devops-portfolio-lambda:scan
@@ -119,14 +110,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Checkov on all Terraform files
+      - name: Run Checkov on Terraform files
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
           framework: terraform
           soft_fail: true
           quiet: true
-          output_format: cli
 
       - name: Run Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
@@ -147,37 +137,29 @@ jobs:
         run: |
           cat > security-report.md << 'REPORT'
           # DevSecOps Security Evaluation Report
-
           **Run:** ${{ github.run_number }}
           **Commit:** ${{ github.sha }}
           **Branch:** ${{ github.ref_name }}
-          **Date:** ${{ github.event.repository.updated_at }}
 
           ## Pipeline Results
-
           | Stage | Tool | Result | Purpose |
           |-------|------|--------|---------|
-          | 1 — Dependency Scan | pip-audit | ${{ needs.dependency-scan.result }} | CVEs in Python packages |
-          | 2 — Image Scan | Trivy | ${{ needs.image-scan.result }} | CVEs in container image |
-          | 3 — IaC Security | Checkov + Trivy fs | ${{ needs.iac-security-scan.result }} | Misconfigurations in Terraform |
-          | 4 — Report | This report | Generated | Structured findings summary |
+          | 1 - Dependency Scan | pip-audit | ${{ needs.dependency-scan.result }} | CVEs in Python packages |
+          | 2 - Image Scan | Trivy | ${{ needs.image-scan.result }} | CVEs in container image |
+          | 3 - IaC Security | Checkov + Trivy fs | ${{ needs.iac-security-scan.result }} | Terraform misconfigurations |
+          | 4 - Report | This report | Generated | Structured findings summary |
 
           ## Tools Used
-          - **pip-audit:** Scans Python dependencies against PyPI Advisory Database
-          - **Trivy (image):** Scans container layers for OS and library CVEs
-          - **Trivy (filesystem):** Scans source code and configs for secrets and misconfigs
-          - **Checkov:** Scans Terraform for security misconfigurations
+          - pip-audit: Python dependency CVE scanning
+          - Trivy image: Container layer vulnerability scanning
+          - Trivy filesystem: Source code and config scanning
+          - Checkov: Terraform security misconfiguration scanning
 
           ## Security Philosophy
-          All scans use exit-code 0 (non-blocking) to maintain deployment
-          velocity while providing full security visibility. In production,
+          All scans use exit-code 0 to maintain deployment velocity
+          while providing full security visibility. In production,
           CRITICAL findings would block the pipeline (exit-code 1).
-
-          ## SARIF Report
-          Container scan results uploaded to GitHub Security tab.
-          View at: Security → Code scanning alerts
           REPORT
-          
           cat security-report.md
 
       - name: Upload security report
