@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitops-app
+  namespace: argocd
+  labels:
+    project: devops-portfolio
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/horley-12/devops-ai-portfolio.git
+    targetRevision: HEAD
+    path: 05-gitops-argocd/app/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
